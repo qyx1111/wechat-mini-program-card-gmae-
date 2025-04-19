@@ -1,0 +1,88 @@
+<view class="container">
+  <!-- 背景图 -->
+  <image wx:if="{{backgroundImage}}" src="{{backgroundImage}}" class="background-image" mode="aspectFill"></image>
+
+  <!-- 菜单状态 -->
+  <view wx:if="{{gameState === 'menu'}}" class="menu-container">
+    <text class="title">喔的朋友</text>
+    <button type="primary" bindtap="startGame">开始游戏 ({{currentLevelThemeName}})</button>
+    <text class="achievement-info">已解锁成就: {{unlockedAchievementsCount}} / {{totalAchievementsCount}}</text>
+    <!-- 可以添加更多菜单选项 -->
+  </view>
+
+  <!-- 游戏进行中状态 -->
+  <view wx:if="{{gameState === 'playing'}}" class="playing-container">
+    <!-- 顶部信息栏 -->
+    <view class="top-bar">
+      <text>关卡 {{currentLevelId}}: {{currentLevelThemeName}}</text>
+      <text>用时: {{formattedElapsedTime}}s</text>
+      <text wx:if="{{levelTimeLimit > 0}}">剩余: {{remainingTime}}s</text>
+      <text>尝试: {{attempts}}</text>
+      <text>匹配: {{matchedPairs}} / {{totalPairs}}</text>
+    </view>
+
+    <!-- 卡片网格 -->
+    <view class="grid-container" style="grid-template-columns: repeat({{gridCols}}, 1fr); grid-template-rows: repeat({{gridRows}}, 1fr);">
+      <view wx:for="{{cards}}" wx:key="id" class="card-wrapper">
+        <view class="card {{item.isFaceUp ? 'flipped' : ''}} {{item.isMatched ? 'matched' : ''}}"
+              bindtap="handleCardTap" data-index="{{index}}"
+              style="width: {{cardWidth}}px; height: {{cardHeight}}px;">
+          <!-- 卡背 -->
+          <view class="card-face card-back">
+            <image src="{{cardBackImage}}"></image>
+          </view>
+          <!-- 卡面 -->
+          <view class="card-face card-front">
+            <image src="{{item.imagePath}}"></image>
+          </view>
+        </view>
+      </view>
+    </view>
+
+    <!-- 匹配成功提示 -->
+    <text wx:if="{{itemNameToShow}}" class="item-name-popup">{{itemNameToShow}}</text>
+
+    <!-- 成就解锁弹窗 -->
+    <view wx:if="{{achievementToShow}}" class="achievement-popup">
+      <text class="popup-title">成就解锁!</text>
+      <text>{{achievementToShow.name}}</text>
+      <text class="popup-desc">{{achievementToShow.desc}}</text>
+    </view>
+  </view>
+
+  <!-- 关卡完成状态 -->
+  <view wx:if="{{gameState === 'level_complete'}}" class="level-complete-container">
+     <image wx:if="{{levelCompleteImage}}" src="{{levelCompleteImage}}" class="complete-image" mode="aspectFit"></image>
+     <text class="title">关卡 {{currentLevelId}} ({{currentLevelThemeName}}) 完成!</text>
+     <text>用时: {{formattedElapsedTime}} 秒</text>
+     <text>尝试次数: {{attempts}}</text>
+     <text>错误次数: {{mistakesCurrentLevel}}</text>
+     <view wx:if="{{newlyUnlockedAchievements.length > 0}}" class="unlocked-list">
+        <text>本次解锁成就:</text>
+        <view wx:for="{{newlyUnlockedAchievements}}" wx:key="name">
+            <text>- {{item.name}}: {{item.desc}}</text>
+        </view>
+     </view>
+     <button type="primary" bindtap="nextLevel">
+       {{ currentLevelIndex + 1 < levels.length ? '下一关 (' + nextLevelThemeName + ')' : '查看最终结算' }}
+     </button>
+  </view>
+
+  <!-- 游戏结束状态 -->
+  <view wx:if="{{gameState === 'game_over'}}" class="game-over-container">
+    <text class="title">游戏结束</text>
+    <text>{{gameOverReason}}</text>
+    <button type="warn" bindtap="goToMenu">返回菜单</button>
+  </view>
+
+   <!-- 所有关卡完成状态 -->
+  <view wx:if="{{gameState === 'all_levels_complete'}}" class="all-complete-container">
+    <text class="title">恭喜!</text>
+    <text>你已完成所有季节的挑战!</text>
+     <view wx:if="{{achievements.complete_all.unlocked}}">
+        <text>成就解锁: {{achievements.complete_all.name}}</text>
+     </view>
+    <button type="primary" bindtap="goToMenu">返回菜单</button>
+  </view>
+
+</view>
