@@ -2,6 +2,7 @@
   "description": "Project private configuration file. Contents in this file will override the same fields in project.config.json. Project changes are prioritized for synchronization to this file. See documentation: https://developers.weixin.qq.com/miniprogram/dev/devtools/projectconfig.html",
   "projectname": "wechat-mini-program",
   "setting": {
-    "compileHotReLoad": true
+    "compileHotReLoad": true,
+    "bigPackageSizeSupport": true
   }
 }
