@@ -72,12 +72,12 @@ Page({
 
   // --- 生命周期函数 ---
   onLoad: function (options) {
+    // 预加载声音
+    this.preloadSounds(); // 确保在 onLoad 中调用一次以创建上下文
     // 加载持久化的成就状态
     this.loadAchievements();
     // 初始化菜单显示
     this.updateMenuInfo();
-    // 预加载声音 (可选)
-    this.preloadSounds();
   },
 
   onUnload: function() {
@@ -87,26 +87,76 @@ Page({
     if (this.data.showNameTimeout) clearTimeout(this.data.showNameTimeout);
     if (this.data.showAchievementTimeout) clearTimeout(this.data.showAchievementTimeout);
     // 停止背景音乐等
-    if (this.bgmAudio) this.bgmAudio.stop();
+    this.stopBGM(); // 使用新的停止函数
   },
 
   // --- 声音处理 ---
   preloadSounds: function() {
-      this.flipAudio = wx.createInnerAudioContext();
-      this.flipAudio.src = '/assets/sounds/flip.wav'; // 示例路径
-      this.matchAudio = wx.createInnerAudioContext();
-      this.matchAudio.src = '/assets/sounds/match.wav';
-      this.winAudio = wx.createInnerAudioContext();
-      this.winAudio.src = '/assets/sounds/win.wav';
-      this.bgmAudio = wx.createInnerAudioContext();
-      this.bgmAudio.src = '/assets/sounds/bgm.wav';
-      this.bgmAudio.loop = true; // 设置循环播放
+      // 只创建一次音频上下文
+      if (!this.flipAudio) {
+          this.flipAudio = wx.createInnerAudioContext();
+          this.flipAudio.src = '/assets/sounds/flip.wav'; // 示例路径
+      }
+      if (!this.matchAudio) {
+          this.matchAudio = wx.createInnerAudioContext();
+          this.matchAudio.src = '/assets/sounds/match.wav';
+      }
+      if (!this.winAudio) {
+          this.winAudio = wx.createInnerAudioContext();
+          this.winAudio.src = '/assets/sounds/win.wav';
+      }
+      if (!this.bgmAudio) {
+          this.bgmAudio = wx.createInnerAudioContext();
+          this.bgmAudio.src = '/assets/sounds/bgm.wav';
+          this.bgmAudio.loop = true; // 设置循环播放
+          // 监听 BGM 是否自然结束（虽然设置了 loop，以防万一）
+          this.bgmAudio.onEnded(() => {
+              // 如果需要，可以在这里处理循环逻辑，但 loop=true 通常足够
+              console.log("BGM ended (should loop)");
+          });
+          this.bgmAudio.onError((res) => {
+              console.error("BGM Error:", res.errMsg, res.errCode);
+          });
+      }
   },
 
   playSound: function(audioContext) {
       if (audioContext) {
           audioContext.stop(); // 先停止再播放，避免重叠问题
           audioContext.play();
+      }
+  },
+
+  // --- BGM 控制 ---
+  playBGM: function() {
+      if (this.bgmAudio) {
+          // 检查 paused 状态，如果是 undefined 或 true，则播放
+          // paused 在首次播放前是 undefined，播放后是 false，暂停后是 true
+          if (this.bgmAudio.paused === undefined || this.bgmAudio.paused) {
+              console.log("Playing BGM");
+              this.bgmAudio.play();
+          } else {
+              console.log("BGM already playing");
+          }
+      } else {
+          console.warn("BGM audio context not initialized yet.");
+          // 可以尝试重新初始化，但不推荐在这里做
+          // this.preloadSounds();
+          // this.bgmAudio.play();
+      }
+  },
+
+  pauseBGM: function() {
+      if (this.bgmAudio && !this.bgmAudio.paused) {
+          console.log("Pausing BGM");
+          this.bgmAudio.pause();
+      }
+  },
+
+  stopBGM: function() {
+      if (this.bgmAudio) {
+          console.log("Stopping BGM");
+          this.bgmAudio.stop();
       }
   },
 
@@ -117,9 +167,8 @@ Page({
           unlockedAchievementsCount: unlockedCount,
           currentLevelThemeName: THEME_NAMES[LEVELS[this.data.currentLevelIndex].theme] || '未知',
       });
-      if (this.bgmAudio && this.data.gameState === 'menu') {
-          this.bgmAudio.play(); // 菜单界面播放BGM
-      }
+      // 在菜单界面播放BGM
+      this.playBGM();
   },
 
   startGame: function() {
@@ -130,7 +179,7 @@ Page({
     if (levelIndex >= this.data.levels.length) {
       this.checkAchievements(null, true); // 检查最终成就
       this.setData({ gameState: 'all_levels_complete' });
-      if (this.bgmAudio) this.bgmAudio.stop(); // 停止BGM
+      this.stopBGM(); // 停止BGM
       return;
     }
 
@@ -230,7 +279,8 @@ Page({
 
     // 启动计时器
     this.startTimer();
-    if (this.bgmAudio) this.bgmAudio.play(); // 游戏时播放BGM
+    // 确保游戏时 BGM 在播放
+    this.playBGM();
   },
 
   // --- 模拟获取节气数据 ---
@@ -300,7 +350,7 @@ Page({
             gameOverReason: '时间到!',
             timerInterval: null
         });
-        if (this.bgmAudio) this.bgmAudio.stop();
+        this.stopBGM(); // 时间到，停止 BGM
       }
     }, 1000);
     this.setData({ timerInterval: timerInterval });
@@ -393,7 +443,7 @@ Page({
   levelComplete: function() {
     if (this.data.timerInterval) clearInterval(this.data.timerInterval); // 停止计时器
     this.playSound(this.winAudio); // 播放胜利音效
-    if (this.bgmAudio) this.bgmAudio.pause(); // 暂停BGM
+    this.pauseBGM(); // 关卡完成时暂停 BGM，而不是停止
 
     // 检查并记录本关解锁的成就
     this.checkAchievements(true);
@@ -420,10 +470,12 @@ Page({
   nextLevel: function() {
     if (this.data.currentLevelIndex + 1 < this.data.levels.length) {
         this.setupLevel(this.data.currentLevelIndex + 1);
+        // setupLevel 内部会调用 playBGM() 恢复播放
     } else {
         // 所有关卡完成
         this.checkAchievements(null, true); // 确保最终成就被检查
         this.setData({ gameState: 'all_levels_complete' });
+        this.stopBGM(); // 全部完成，停止 BGM
     }
   },
 
@@ -435,7 +487,13 @@ Page({
         timerInterval: null,
         // 可以考虑重置其他需要清空的状态
     });
-    this.updateMenuInfo(); // 更新菜单显示信息
+    this.updateMenuInfo(); // updateMenuInfo 内部会调用 playBGM()
+  },
+
+  // --- 新增：退出到菜单 ---
+  exitToMenu: function() {
+    console.log("Exit button tapped, returning to menu.");
+    this.goToMenu(); // 直接调用 goToMenu 实现返回菜单逻辑
   },
 
   // --- 成就系统 ---

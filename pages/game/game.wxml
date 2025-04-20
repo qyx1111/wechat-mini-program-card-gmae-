@@ -2,6 +2,9 @@
   <!-- 背景图 -->
   <image wx:if="{{backgroundImage}}" src="{{backgroundImage}}" class="background-image" mode="aspectFill"></image>
 
+  <!-- 退出按钮 -->
+  <button wx:if="{{gameState !== 'menu' && gameState !== 'game_over'}}" class="exit-button" size="mini" type="default" bindtap="exitToMenu">退出</button>
+
   <!-- 菜单状态 -->
   <view wx:if="{{gameState === 'menu'}}" class="menu-container">
     <text class="title">喔的朋友</text>
