@@ -102,7 +102,7 @@
 }
 
 .card.matched {
-  opacity: 0.5; /* 匹配后变淡 */
+  /* opacity: 0.5; */ /* 匹配后变淡 - 注释掉此行 */
   /* 可以添加其他效果，如边框 */
   /* transform: scale(0.95); */
 }

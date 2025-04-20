@@ -156,12 +156,28 @@ Page({
 
     let cardData = [];
     selectedItems.forEach((item, index) => {
-        // 假设每个节气有一张代表图片
-        // 使用 pinyin 构建路径，避免中文
-        const imagePath = `/assets/images/${theme}/${item.pinyin}/${item.image}`; // 修改这里
-        const cardInfo = { id: index, name: item.name, pinyin: item.pinyin, imagePath: imagePath }; // 添加 pinyin 到 cardInfo (可选，但保持一致性)
+        // 检查是否有可用的图片列表
+        if (!item.images || item.images.length === 0) {
+            console.error(`节气 ${item.name} (${item.pinyin}) 没有配置可用的图片列表。`);
+            // 可以选择跳过这个节气或显示一个默认图片
+            return; // 暂时跳过这个节气对
+        }
+        // 从可用图片列表中随机选择一张
+        const availableImages = item.images;
+        const randomImageName = availableImages[Math.floor(Math.random() * availableImages.length)];
+        // 构建图片路径
+        const imagePath = `/assets/images/${theme}/${item.pinyin}/${randomImageName}`; // 使用随机选择的图片名
+        const cardInfo = { id: index, name: item.name, pinyin: item.pinyin, imagePath: imagePath };
         cardData.push(cardInfo, { ...cardInfo }); // 添加两次以配对
     });
+
+    // 检查是否有足够的卡牌数据生成
+    if (cardData.length !== totalCards) {
+        console.error(`未能为关卡 ${levelIndex} 生成足够的卡牌数据。预期 ${totalCards} 张，实际 ${cardData.length} 张。可能是因为部分节气缺少图片配置。`);
+        wx.showToast({ title: '关卡资源错误', icon: 'error' });
+        this.goToMenu();
+        return;
+    }
 
     // 洗牌
     cardData.sort(() => 0.5 - Math.random());
@@ -222,38 +238,39 @@ Page({
       // **重要:** 这里是实际的节气数据源
       // 你可以根据需要从其他地方加载，例如 JSON 文件或 API
       // 使用已有的模拟数据作为数据源 - 添加 pinyin 字段
+      // !! 将 'image' 改为 'images' 数组，并填入实际的文件名 !!
       const solarTermsData = {
           spring: [
-              {name: '立春', pinyin: 'lichun', image: 'lichun.png'},
-              {name: '雨水', pinyin: 'yushui', image: 'yushui.png'},
-              {name: '惊蛰', pinyin: 'jingzhe', image: 'jingzhe.png'},
-              {name: '春分', pinyin: 'chunfen', image: 'chunfen.png'},
-              {name: '清明', pinyin: 'qingming', image: 'qingming.png'},
-              {name: '谷雨', pinyin: 'guyu', image: 'guyu.png'}
+              {name: '立春', pinyin: 'lichun', images: ['lichun1.png', 'lichun2.png', 'lichun3.png', 'lichun4.png']},
+              {name: '雨水', pinyin: 'yushui', images: ['yushui1.png', 'yushui2.png', 'yushui3.png', 'yushui4.png']},
+              {name: '惊蛰', pinyin: 'jingzhe', images: ['jingzhe1.png', 'jingzhe2.png', 'jingzhe3.png', 'jingzhe4.png']},
+              {name: '春分', pinyin: 'chunfen', images: ['chunfen1.png', 'chunfen2.png', 'chunfen3.png', 'chunfen4.png']},
+              {name: '清明', pinyin: 'qingming', images: ['qingming1.png', 'qingming2.png', 'qingming3.png']},
+              {name: '谷雨', pinyin: 'guyu', images: ['guyu1.png', 'guyu2.png', 'guyu3.png', 'guyu4.png']}
           ],
           summer: [
-              {name: '立夏', pinyin: 'lixia', image: 'lixia.png'},
-              {name: '小满', pinyin: 'xiaoman', image: 'xiaoman.png'},
-              {name: '芒种', pinyin: 'mangzhong', image: 'mangzhong.png'},
-              {name: '夏至', pinyin: 'xiazhi', image: 'xiazhi.png'},
-              {name: '小暑', pinyin: 'xiaoshu', image: 'xiaoshu.png'},
-              {name: '大暑', pinyin: 'dashu', image: 'dashu.png'}
+              {name: '立夏', pinyin: 'lixia', images: ['lixia1.png', 'lixia2.png', 'lixia3.png', 'lixia4.png']},
+              {name: '小满', pinyin: 'xiaoman', images: ['xiaoman1.png', 'xiaoman2.png', 'xiaoman3.png', 'xiaoman4.png']},
+              {name: '芒种', pinyin: 'mangzhong', images: ['mangzhong1.png', 'mangzhong2.png', 'mangzhong3.png', 'mangzhong4.png']},
+              {name: '夏至', pinyin: 'xiazhi', images: ['xiazhi1.png', 'xiazhi2.png', 'xiazhi3.png', 'xiazhi4.png']},
+              {name: '小暑', pinyin: 'xiaoshu', images: ['xiaoshu1.png', 'xiaoshu2.png', 'xiaoshu3.png', 'xiaoshu4.png']},
+              {name: '大暑', pinyin: 'dashu', images: ['dashu1.png', 'dashu2.png', 'dashu3.png', 'dashu4.png']}
           ],
           autumn: [
-              {name: '立秋', pinyin: 'liqiu', image: 'liqiu.png'},
-              {name: '处暑', pinyin: 'chushu', image: 'chushu.png'},
-              {name: '白露', pinyin: 'bailu', image: 'bailu.png'},
-              {name: '秋分', pinyin: 'qiufen', image: 'qiufen.png'},
-              {name: '寒露', pinyin: 'hanlu', image: 'hanlu.png'},
-              {name: '霜降', pinyin: 'shuangjiang', image: 'shuangjiang.png'}
+              {name: '立秋', pinyin: 'liqiu', images: ['liqiu1.png', 'liqiu2.png', 'liqiu3.png', 'liqiu4.png']},
+              {name: '处暑', pinyin: 'chushu', images: ['chushu1.png', 'chushu2.png', 'chushu3.png', 'chushu4.png']},
+              {name: '白露', pinyin: 'bailu', images: ['bailu1.png', 'bailu2.png', 'bailu3.png', 'bailu4.png']},
+              {name: '秋分', pinyin: 'qiufen', images: ['qiufen1.png', 'qiufen2.png', 'qiufen3.png', 'qiufen4.png']},
+              {name: '寒露', pinyin: 'hanlu', images: ['hanlu1.png', 'hanlu2.png', 'hanlu3.png', 'hanlu4.png']},
+              {name: '霜降', pinyin: 'shuangjiang', images: ['shuangjiang1.png', 'shuangjiang2.png', 'shuangjiang3.png', 'shuangjiang4.png']}
           ],
           winter: [
-              {name: '立冬', pinyin: 'lidong', image: 'lidong.png'},
-              {name: '小雪', pinyin: 'xiaoxue', image: 'xiaoxue.png'},
-              {name: '大雪', pinyin: 'daxue', image: 'daxue.png'},
-              {name: '冬至', pinyin: 'dongzhi', image: 'dongzhi.png'},
-              {name: '小寒', pinyin: 'xiaohan', image: 'xiaohan.png'},
-              {name: '大寒', pinyin: 'dahan', image: 'dahan.png'}
+              {name: '立冬', pinyin: 'lidong', images: ['lidong1.png', 'lidong2.png', 'lidong3.png', 'lidong4.png']},
+              {name: '小雪', pinyin: 'xiaoxue', images: ['xiaoxue1.png', 'xiaoxue2.png', 'xiaoxue3.png', 'xiaoxue4.png']},
+              {name: '大雪', pinyin: 'daxue', images: ['daxue1.png', 'daxue2.png', 'daxue3.png', 'daxue4.png']},
+              {name: '冬至', pinyin: 'dongzhi', images: ['dongzhi1.png', 'dongzhi2.png', 'dongzhi3.png', 'dongzhi4.png']},
+              {name: '小寒', pinyin: 'xiaohan', images: ['xiaohan1.png', 'xiaohan2.png', 'xiaohan3.png', 'xiaohan4.png']},
+              {name: '大寒', pinyin: 'dahan', images: ['dahan1.png', 'dahan2.png', 'dahan3.png', 'dahan4.png']}
           ],
       };
       // 返回对应主题的数据，如果找不到则返回空数组
