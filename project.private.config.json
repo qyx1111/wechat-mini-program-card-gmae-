@@ -3,6 +3,8 @@
   "projectname": "wechat-mini-program",
   "setting": {
     "compileHotReLoad": true,
-    "bigPackageSizeSupport": true
-  }
+    "bigPackageSizeSupport": true,
+    "preloadBackgroundData": false
+  },
+  "libVersion": "3.8.1"
 }

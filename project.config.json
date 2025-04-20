@@ -2,7 +2,7 @@
   "miniprogramRoot": "",
   "projectname": "wechat-mini-program",
   "description": "A WeChat Mini Program for memory matching game based on the 24 solar terms.",
-  "appid": "wx50842c35dd4babcd",
+  "appid": "wxaf95cbf43ef12dcc",
   "setting": {
     "urlCheck": true,
     "es6": true,
@@ -17,7 +17,7 @@
     },
     "minified": true
   },
-  "compileType": "miniprogram",
+  "compileType": "game",
   "libVersion": "3.8.1",
   "packOptions": {
     "ignore": [],

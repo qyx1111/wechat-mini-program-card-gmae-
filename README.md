@@ -1,66 +1,61 @@
 # WeChat Mini Program
 
-This project is a WeChat Mini Program designed for a memory matching game based on the 24 solar terms. The application allows users to engage in a fun and interactive way to learn about these terms while playing a card matching game.
+这个项目是一个基于 24 节气的记忆匹配游戏微信小程序。用户可以通过玩卡片匹配游戏，在不同季节中以有趣和互动的方式学习这些节气知识。
 
-## Project Structure
+## 项目结构
 
-- **app.js**: The entry file for the mini program, responsible for initializing the lifecycle and global configuration.
-- **app.json**: The global configuration file defining the page paths, window appearance, and network timeout settings.
-- **app.wxss**: The global style file that defines the overall styling rules for the mini program.
-- **pages/**: This directory contains the pages of the mini program.
-  - **index/**: The main page of the application. (Note: This seems to be legacy, current main page is 'game')
-    - **index.js**: Logic for the main page.
-    - **index.json**: Configuration for the main page.
-    - **index.wxml**: Structure for the main page.
-    - **index.wxss**: Styles for the main page.
-  - **logs/**: A page to display logs. (Note: This might be legacy or unused based on app.json)
-    - **logs.js**: Logic for the logs page.
-    - **logs.json**: Configuration for the logs page.
-    - **logs.wxml**: Structure for the logs page.
-    - **logs.wxss**: Styles for the logs page.
-  - **game/**: The game page.
-    - **game.js**: Logic for the game page, including main functionalities and event handling.
-    - **game.json**: Configuration for the game page.
-    - **game.wxml**: Structure for the game page.
-    - **game.wxss**: Styles for the game page.
-- **utils/**: This directory contains utility functions.
-  - **util.js**: Contains common utility functions that can be used across different pages of the mini program.
-- **assets/**: This directory is used to store images and sound resources.
-  - **images/**: Contains game-related images.
-    - **card_back.png**: Image for the back of the cards.
-    - **background.png**: Background image for the game.
-    - **spring/**: Contains images related to the spring season.
-      - **lichun/lichun.png**: Image for the solar term "Lichun". (Example using pinyin directory)
-      - **yushui/yushui.png**: ...
-      - **qingming/qingming.png**: ... (Using pinyin 'qingming' as directory name)
-      - ...
-    - **summer/**: Contains images related to the summer season (e.g., lixia/lixia.png).
-    - **autumn/**: Contains images related to the autumn season (e.g., liqiu/liqiu.png).
-    - **winter/**: Contains images related to the winter season (e.g., lidong/lidong.png).
-    - **spring_complete.png**: Image shown upon completing the spring level.
-    - **summer_complete.png**: ...
-    - **autumn_complete.png**: ...
-    - **winter_complete.png**: ...
-  - **sounds/**: Contains sound resources related to the game.
-    - **flip.wav**: Sound effect for flipping a card.
-    - **match.wav**: Sound effect for a successful match.
-    - **win.wav**: Sound effect for winning the game.
-    - **bgm.wav**: Background music for the game.
-- **project.config.json**: The project configuration file containing basic information and settings for the mini program.
-- **project.private.config.json**: Private project configuration file.
+- **app.js**: 小程序的入口文件，负责初始化生命周期和全局配置。
+- **app.json**: 全局配置文件，定义页面路径、窗口外观和网络超时设置。
+- **app.wxss**: 全局样式文件，定义小程序的整体样式规则。
+- **pages/**: 包含小程序的页面。
+  - **game/**: 游戏主页面。
+    - **game.js**: 游戏页面的逻辑，包括核心功能和事件处理。
+    - **game.json**: 游戏页面的配置。
+    - **game.wxml**: 游戏页面的结构。
+    - **game.wxss**: 游戏页面的样式。
+- **utils/**: 包含工具函数。
+  - **util.js**: 包含可在小程序不同页面使用的通用工具函数。
+- **assets/**: 用于存储图像和声音资源。
+  - **images/**: 包含游戏相关的图像。
+    - **card_back.png**: 卡片背面的图像。
+    - **background.png**: 游戏背景图像。
+    - **spring/**: 包含与春季相关的图像。
+      - **lichun/**: 包含立春节气的多张图像 (例如: `lichun1.png`, `lichun2.png`)。
+      - **yushui/**: ... (依此类推)
+      - **jingzhe/**: ...
+      - **chunfen/**: ...
+      - **qingming/**: ...
+      - **guyu/**: ...
+    - **summer/**: 包含与夏季相关的图像 (例如: `lixia/lixia1.png`)。
+    - **autumn/**: 包含与秋季相关的图像 (例如: `liqiu/liqiu1.png`)。
+    - **winter/**: 包含与冬季相关的图像 (例如: `lidong/lidong1.png`)。
+    - **spring_complete.png**: 完成春季关卡时显示的图像。
+    - **summer_complete.png**: 完成夏季关卡时显示的图像。
+    - **autumn_complete.png**: 完成秋季关卡时显示的图像。
+    - **winter_complete.png**: 完成冬季关卡时显示的图像。
+  - **sounds/**: 包含与游戏相关的声音资源。
+    - **flip.wav**: 翻开卡片时的音效。
+    - **match.wav**: 成功匹配时的音效。
+    - **win.wav**: 赢得关卡时的音效。
+    - **bgm.wav**: 游戏的背景音乐。
+- **project.config.json**: 项目配置文件，包含小程序的基本信息和设置。
+- **project.private.config.json**: 私有项目配置文件。
 
-## Usage
+## 使用方法
 
-To run the mini program, you need to have the WeChat Developer Tool installed. Open the tool, create a new project, and import this project directory (`c:\Users\qyx\Desktop\wechat-mini-program`). You can then run the mini program in the simulator. Make sure to provide your AppID or use a test AppID.
+要运行此小程序，您需要安装微信开发者工具。打开工具，创建一个新项目，并导入此项目目录 (`c:\Users\qyx\Desktop\wechat-mini-program`)。然后您可以在模拟器中运行小程序。请确保提供您的 AppID 或使用测试 AppID。
 
-## Features
+## 功能特点
 
-- Interactive memory matching game.
-- Learn about the 24 solar terms through gameplay.
-- Sound effects and background music enhance the gaming experience.
-- Achievement system to track progress.
-- Different levels based on seasons with varying time limits.
+- 基于 24 节气的互动式记忆匹配游戏。
+- 通过游戏玩法学习 24 节气知识。
+- **季节性关卡**: 游戏分为春、夏、秋、冬四个主题关卡。
+- **随机卡面**: 每个节气有多张不同的图片，每次游戏随机选择一张作为卡面，增加重玩性。
+- **时间限制**: 部分关卡设有时间限制，增加挑战性。
+- **音效与背景音乐**: 包含卡片翻转、匹配成功、关卡胜利的音效以及背景音乐，增强游戏体验。
+- **成就系统**: 跟踪玩家进度，解锁特定条件下的成就（例如：快速完成、零错误完成、完成所有关卡等）。
+- **状态反馈**: 清晰的游戏状态显示（菜单、游戏中、关卡完成、游戏结束、全部完成），并在匹配成功时显示节气名称，解锁成就时弹出提示。
 
-## License
+## 许可证
 
-This project is open-source and available for modification and distribution under the MIT License.
+此项目是开源的，可以根据 MIT 许可证进行修改和分发。
