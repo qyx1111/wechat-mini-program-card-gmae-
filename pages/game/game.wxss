@@ -1,4 +1,4 @@
-wechate-mini-program/wechat-mini-program/pages/index/index.wxss
+wechate-mini-program/wechat-mini-program/pages/game/game.wxss
 
 .container {
   width: 100%;
@@ -135,7 +135,8 @@ wechate-mini-program/wechat-mini-program/pages/index/index.wxss
     display: block;
     width: 100%;
     height: 100%;
-    object-fit: cover;
+    object-fit: contain;  /* 改为缩放模式 */
+    background-color: #fff;  /* 添加背景色，避免透明图片问题 */
 }
 
 .card-back {
